@@ -1,0 +1,11 @@
+
+网络IO的模型中，之前介绍了select模型。select 确实是一个简明好用的模型。可是现在的服务器却越来越少采取这样的模型，原因之一就是它的性能让人担忧。虽然后来升级了poll模型，本质上还是和select模型类似。当然，当一个技术逐渐被人放弃的时候，很大程度上是有了更好的替代方案。没错，还有select/poll模型更好的网络IO模型，就是今天介绍的主角---Epoll。在很多地方，epoll都是高性能代名词，准确的说epoll是Linux内核升级的多路复用IO模型，在Unix和MacOS上类似的则是 Kqueue。
+
+epoll优点
+select的缺点之一就是在网络IO流到来的时候，线程会轮询监控文件数组，并且是线性扫描，还有最大值的限制。相比select，epoll则无需如此。服务器主线程创建了epoll对象，并且注册socket和文件事件即可。当数据抵达的时候，也就是对于事件发生，则会调用此前注册的那个io文件。
+
+
+epoll与tornado
+既然epoll是一种高性能的网络io模型，很多web框架也采取epoll模型。大名鼎鼎tornado是python框架中一个高性能的异步框架，其底层也是来者epoll的IO模型。
+当然，tornado是跨平台的，因此他的网络io，在linux下是epoll，unix下则是kqueue。
+
